@@ -1,0 +1,71 @@
+<div class="container mx-auto my-8 px-4">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="h3">Items</h1>
+
+    <% if @items.any? %>
+      <%= link_to 'New Item', new_item_path, class: "btn btn-primary" %>
+    <% end %>
+  </div>
+
+  <% if @items.any? %>
+    <div class="bg-white rounded shadow table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :short_name, 'Short name', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :name, 'Name', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :sku, 'Sku', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :price, 'Price', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :weight_lbs, 'Weight lbs', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :width, 'Width', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :height, 'Height', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :bulk, 'Bulk', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :bulk_description, 'Bulk description', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :bulk_qty, 'Bulk qty', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :item_id, 'Item', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs"><%= sortable @items, :account_id, 'Account', class: 'text-gray-700' %></th>
+            <th class="p-3 uppercase text-left text-xs text-gray-700 w-20">Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+        <% @items.each do |item| %>
+          <tr class="group border-t border-gray-400 hover:bg-gray-100">
+                      <td class="p-3"><%= item.short_name %></td>
+                      <td class="p-3"><%= item.name %></td>
+                      <td class="p-3"><%= item.sku %></td>
+                      <td class="p-3"><%= item.price %></td>
+                      <td class="p-3"><%= item.weight_lbs %></td>
+                      <td class="p-3"><%= item.width %></td>
+                      <td class="p-3"><%= item.height %></td>
+                      <td class="p-3"><%= item.bulk %></td>
+                      <td class="p-3"><%= item.bulk_description %></td>
+                      <td class="p-3"><%= item.bulk_qty %></td>
+                      <td class="p-3"><%= item.item_id %></td>
+                      <td class="p-3"><%= item.account_id %></td>
+          
+            <td>
+              <%= link_to "View", item, class: "btn btn-link no-underline" %>
+            </td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+    </div>
+
+    <% if @pagy.pages > 1 %>
+      <div class="text-center my-6">
+        <%== pagy_nav(@pagy) %>
+      </div>
+    <% end %>
+
+  <% else %>
+    <div class="bg-white rounded shadow flex flex-col items-center justify-between p-8 lg:flex-row">
+      <%= image_tag "empty.svg", class: "mb-4 lg:w-1/2" %>
+      <div class="flex-1 text-center">
+        <p class="h3 mb-4">Create your first Item</p>
+        <%= link_to 'New Item', new_item_path, class: "btn btn-primary" %>
+      </div>
+    </div>
+  <% end %>
+</div>

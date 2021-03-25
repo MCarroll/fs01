@@ -1,0 +1,14 @@
+--- !ruby/object:Jumpstart::Configuration
+application_name: FlowSpec
+business_name: FlowSpec LLC
+domain: example.com
+support_email: Michael.vision360@gmail.com
+default_from_email: Jumpstart <support@example.com>
+business_address: ''
+background_job_processor: sidekiq
+email_provider: ''
+personal_accounts: true
+livereload: true
+register_with_account: false
+multitenancy:
+- path

@@ -32,6 +32,7 @@
     "slim-select": "^1.23.1",
     "stimulus": "^2.0.0",
     "stimulus-flatpickr": "^1.2.4",
+    "stimulus_reflex": "^3.4.0",
     "style-loader": "^2.0.0",
     "tailwindcss": "^2.0.2",
     "tailwindcss-stimulus-components": "^2.1.0",

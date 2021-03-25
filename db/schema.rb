@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_01_15_211740) do
+ActiveRecord::Schema.define(version: 2021_03_25_060617) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,15 @@ ActiveRecord::Schema.define(version: 2021_01_15_211740) do
     t.string "domain"
     t.string "subdomain"
     t.index ["owner_id"], name: "index_accounts_on_owner_id"
+  end
+
+  create_table "action_mailbox_inbound_emails", force: :cascade do |t|
+    t.integer "status", default: 0, null: false
+    t.string "message_id", null: false
+    t.string "message_checksum", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["message_id", "message_checksum"], name: "index_action_mailbox_inbound_emails_uniqueness", unique: true
   end
 
   create_table "action_text_embeds", force: :cascade do |t|
@@ -123,6 +132,28 @@ ActiveRecord::Schema.define(version: 2021_01_15_211740) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["token"], name: "index_api_tokens_on_token", unique: true
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
+  end
+
+  create_table "items", force: :cascade do |t|
+    t.string "short_name"
+    t.string "name"
+    t.string "sku"
+    t.string "price"
+    t.decimal "weight_value", precision: 30, scale: 15
+    t.integer "weight_unit", limit: 2
+    t.integer "weight_display_unit", limit: 2
+    t.string "weight_type"
+    t.string "width"
+    t.string "height"
+    t.string "bulk"
+    t.string "bulk_description"
+    t.string "bulk_qty"
+    t.bigint "item_id", null: false
+    t.bigint "account_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["account_id"], name: "index_items_on_account_id"
+    t.index ["item_id"], name: "index_items_on_item_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -243,5 +274,7 @@ ActiveRecord::Schema.define(version: 2021_01_15_211740) do
   add_foreign_key "accounts", "users", column: "owner_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "api_tokens", "users"
+  add_foreign_key "items", "accounts"
+  add_foreign_key "items", "items"
   add_foreign_key "user_connected_accounts", "users"
 end

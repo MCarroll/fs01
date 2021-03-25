@@ -1,0 +1,59 @@
+<div class="container mx-auto my-8 px-4">
+  <div class="max-w-3xl mx-auto">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="h3"><%= link_to 'Items', items_path %> > Item #<%= @item.id %></h1>
+      <%= link_to 'Edit', edit_item_path(@item), class: "btn btn-link" %>
+    </div>
+
+    <div class="bg-white rounded shadow p-8">
+            <div class="mb-4">
+        <h5>Short name</h5>
+        <%= @item.short_name %>
+      </div>
+            <div class="mb-4">
+        <h5>Name</h5>
+        <%= @item.name %>
+      </div>
+            <div class="mb-4">
+        <h5>Sku</h5>
+        <%= @item.sku %>
+      </div>
+            <div class="mb-4">
+        <h5>Price</h5>
+        <%= @item.price %>
+      </div>
+            <div class="mb-4">
+        <h5>Weight lbs</h5>
+        <%= @item.weight_lbs %>
+      </div>
+            <div class="mb-4">
+        <h5>Width</h5>
+        <%= @item.width %>
+      </div>
+            <div class="mb-4">
+        <h5>Height</h5>
+        <%= @item.height %>
+      </div>
+            <div class="mb-4">
+        <h5>Bulk</h5>
+        <%= @item.bulk %>
+      </div>
+            <div class="mb-4">
+        <h5>Bulk description</h5>
+        <%= @item.bulk_description %>
+      </div>
+            <div class="mb-4">
+        <h5>Bulk qty</h5>
+        <%= @item.bulk_qty %>
+      </div>
+            <div class="mb-4">
+        <h5>Item</h5>
+        <%= @item.item %>
+      </div>
+            <div class="mb-4">
+        <h5>Account</h5>
+        <%= @item.account %>
+      </div>
+          </div>
+  </div>
+</div>
