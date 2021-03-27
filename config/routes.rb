@@ -74,6 +74,7 @@ Rails.application.routes.draw do
     resource :password
   end
 
+  resources :notifications, only: [:index, :show]
   namespace :users do
     resources :mentions, only: [:index]
   end
@@ -95,6 +96,8 @@ Rails.application.routes.draw do
     get :privacy
     get :pricing
   end
+
+  post :sudo, to: "users/sudo#create"
 
   match "/404", via: :all, to: "errors#not_found"
   match "/500", via: :all, to: "errors#internal_server_error"

@@ -4,12 +4,17 @@ module AccountsHelper
     classes = options[:class]
 
     if account.personal? && account.owner_id == current_user&.id
-      image_tag avatar_url_for(account.users.first, options), class: classes
+      image_tag(
+        avatar_url_for(account.users.first, options),
+        class: classes,
+        alt: account.name
+      )
 
     elsif account.avatar.attached?
       image_tag(
         account.avatar.variant(thumbnail: "#{size}x#{size}^", gravity: "center", extent: "#{size}x#{size}"),
-        class: classes
+        class: classes,
+        alt: account.name
       )
     else
       content = content_tag(:span, account.name.to_s.first, class: "initials")
@@ -33,5 +38,23 @@ module AccountsHelper
 
   def account_admin?(account, account_user)
     AccountUser.find_by(account: account, user: account_user).admin?
+  end
+
+  # A link to switch the account
+  #
+  # For session switching, we'll use a button_to and submit to the server
+  # For path switching, we'll link to the path
+  # For subdomains, we can simply link to the subdomain
+  # For domains, we can link to the domain (assuming it's configured correctly)
+  def switch_account_button(account, **options)
+    # if Jumpstart::Multitenancy.domain? && account.domain?
+    #   link_to options.fetch(:label, account.name), account.domain, options
+    if Jumpstart::Multitenancy.subdomain? && account.subdomain?
+      link_to options.fetch(:label, account.name), root_url(subdomain: account.subdomain), options
+    elsif Jumpstart::Multitenancy.path?
+      link_to options.fetch(:label, account.name), root_url(script_name: "/#{account.id}"), options
+    else
+      button_to options.fetch(:label, account.name), switch_account_path(account), options.merge(method: :patch)
+    end
   end
 end

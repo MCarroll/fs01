@@ -18,12 +18,18 @@ module Jumpstart
   @@config = {}
 
   def self.restart
-    Bundler.original_system("rails restart")
+    run_command "rails restart"
   end
 
   # https://stackoverflow.com/a/25615344/277994
   def self.bundle
-    Bundler.original_system("bundle")
+    run_command "bundle"
+  end
+
+  def self.run_command(command)
+    Bundler.with_original_env do
+      system command
+    end
   end
 
   def self.find_plan(id)

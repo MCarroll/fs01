@@ -56,12 +56,16 @@ Rails.application.configure do
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 
+  # Adds HTML comments to the rendered output indicating where
+  # each template begins and ends
+  config.action_view.annotate_rendered_view_with_filenames = true
+
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
 
   # Set the default URL for ActionMailer in development.
-  config.action_mailer.default_url_options = {host: "localhost", port: ENV.fetch("PORT", 3000).to_i}
+  config.action_mailer.default_url_options = {host: "lvh.me", port: ENV.fetch("PORT", 3000).to_i}
   config.action_mailer.delivery_method = :letter_opener_web
 
   # Verifies that versions and hashed value of the package contents in the project's package.json
@@ -69,4 +73,7 @@ Rails.application.configure do
 
   # Allow accessing localhost on any domain. Important for testing multi-tenant apps
   config.hosts = nil
+
+  # ActiveStorage / ActionText need this set to include the correct URLs from Turbo, etc
+  config.action_controller.default_url_options = {host: "localhost", port: ENV.fetch("PORT", 3000).to_i}
 end

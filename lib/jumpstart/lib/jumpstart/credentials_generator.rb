@@ -56,6 +56,7 @@ module Jumpstart
             # https://developers.facebook.com/apps/
             public_key: ''
             private_key: ''
+            # scope: 'email'
 
           google_oauth2:
             # https://code.google.com/apis/console/
@@ -66,6 +67,7 @@ module Jumpstart
             # https://github.com/settings/developers
             public_key: ''
             private_key: ''
+            # scope: 'user:email'
 
           twitter:
             # https://apps.twitter.com
@@ -93,6 +95,11 @@ module Jumpstart
           password: ''
           domain: ''
 
+        ohmysmtp:
+          # https://app.ohmysmtp.com/ -> API Tokens
+          username: ''
+          password: ''
+
         postmark:
           # https://account.postmarkapp.com/servers -> Server -> API Tokens
           # Use token as both username and password
@@ -101,7 +108,7 @@ module Jumpstart
 
         sendgrid:
           # https://app.sendgrid.com/settings/api_keys
-          username: 'apikey'
+          username: 'apikey' # Leave this alone, the username is actually 'apikey'
           password: ''
           domain: example.com
 
@@ -143,7 +150,7 @@ module Jumpstart
           # https://dashboard.stripe.com/account/webhooks
           # Webhooks should be pointed to https://domain.com/webhooks/stripe
           signing_secret: ''
-          
+
         # Paddle Payments
         # https://vendors.paddle.com/authentication
         paddle:

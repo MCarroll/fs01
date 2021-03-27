@@ -1,6 +1,7 @@
 require "jumpstart/configuration/mailable"
 require "jumpstart/configuration/integratable"
 require "jumpstart/configuration/payable"
+require "open-uri"
 require "thor"
 
 module Jumpstart
@@ -100,11 +101,12 @@ module Jumpstart
       gems[:main] += [{name: "bugsnag"}] if bugsnag?
       gems[:main] += [{name: "sentry-ruby"}, {name: "sentry-rails"}, {name: "sentry-sidekiq"}] if sentry?
       gems[:main] += [{name: "skylight"}] if skylight?
-      gems[:main] += [{name: "stripe"}, {name: "stripe_event"}] if stripe?
+      gems[:main] += [{name: "stripe"}] if stripe?
       gems[:main] << {name: "braintree"} if braintree? || paypal?
       gems[:main] << {name: "paddle_pay"} if paddle?
       gems[:main] << {name: job_processor.to_s} unless job_processor.to_s == "async"
       gems[:development] += [{name: "guard"}, {name: "guard-livereload", version: "~> 2.5", require: false}, {name: "rack-livereload"}] if livereload?
+      gems[:development] += [{name: "solargraph-rails", version: "0.2.0.pre"}] if solargraph?
       gems
     end
 
@@ -165,6 +167,14 @@ module Jumpstart
       @livereload.nil? ? false : ActiveModel::Type::Boolean.new.cast(@livereload)
     end
 
+    def solargraph=(value)
+      @solargraph = ActiveModel::Type::Boolean.new.cast(value)
+    end
+
+    def solargraph?
+      @solargraph.nil? ? false : ActiveModel::Type::Boolean.new.cast(@solargraph)
+    end
+
     def personal_accounts=(value)
       @personal_accounts = ActiveModel::Type::Boolean.new.cast(value)
     end
@@ -175,16 +185,13 @@ module Jumpstart
     end
 
     def update_procfiles
-      write_file Rails.root.join("Procfile"), procfile_content
-      write_file Rails.root.join("Procfile.dev"), procfile_content(dev: true)
+      write_procfile Rails.root.join("Procfile"), procfile_content
+      write_procfile Rails.root.join("Procfile.dev"), procfile_content(dev: true)
     end
 
     def copy_configs
       if job_processor == :sidekiq
-        path = Rails.root.join("config", "sidekiq.yml")
-        unless File.exist?(path)
-          write_file path, JobProcessor.sidekiq_config
-        end
+        copy_template("config/sidekiq.yml")
       end
 
       if airbrake?
@@ -234,6 +241,14 @@ module Jumpstart
       if skylight?
         copy_template("config/skylight.yml")
       end
+
+      if solargraph?
+        URI.open "https://gist.githubusercontent.com/castwide/28b349566a223dfb439a337aea29713e/raw/715473535f11cf3eeb9216d64d01feac2ea37ac0/rails.rb" do |gist|
+          File.open(Rails.root.join("config/definitions.rb"), "w") do |file|
+            file.write(gist.read)
+          end
+        end
+      end
     end
 
     def generate_credentials
@@ -258,27 +273,38 @@ module Jumpstart
     private
 
     def procfile_content(dev: false)
-      content = ["web: bundle exec rails s"]
+      content = {web: "bundle exec rails s"}
 
       # Development should use the webpack-dev-server for convenience
-      content << "webpack: bin/webpack-dev-server" if dev
+      content[:webpack] = "bin/webpack-dev-server" if dev
 
       # Background workers
       if (worker_command = Jumpstart::JobProcessor.command(job_processor))
-        content << "worker: #{worker_command}"
+        content[:worker] = worker_command
       end
 
       # Add the Stripe CLI
-      content << "stripe: stripe listen --forward-to localhost:5000/webhooks/stripe" if dev && stripe?
+      content[:stripe] = "stripe listen --forward-to localhost:5000/webhooks/stripe" if dev && stripe?
 
       # Guard LiveReload
-      content << "guard: bundle exec guard" if dev && livereload?
+      content[:guard] = "bundle exec guard" if dev && livereload?
 
-      content.join("\n")
+      content
     end
 
-    def write_file(path, content)
-      File.open(path, "wb") { |file| file.write(content) }
+    def write_procfile(path, commands)
+      commands.each do |name, command|
+        new_line = "#{name}: #{command}"
+
+        if (matches = File.foreach(path).grep(/#{name}:/)) && matches.any?
+          # Warn only if lines don't match
+          if (old_line = matches.first.chomp) && old_line != new_line
+            Rails.logger.warn "\n'#{name}' already exists in #{path}, skipping. \nOld: `#{old_line}`\nNew: `#{new_line}`\n"
+          end
+        else
+          File.open(path, "a") { |f| f.write("#{name}: #{command}\n") }
+        end
+      end
     end
 
     def copy_template(filename)
@@ -289,7 +315,7 @@ module Jumpstart
     end
 
     def template_path(filename)
-      File.join(File.dirname(__FILE__), "../templates/", filename)
+      Rails.root.join("lib/templates", filename)
     end
   end
 end
