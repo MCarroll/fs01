@@ -1,5 +1,6 @@
 # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
+  resources :weightunits
   resources :items
   # Jumpstart views
   if Rails.env.development? || Rails.env.test?

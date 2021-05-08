@@ -22,8 +22,13 @@
   </div>
 
   <div class="form-group">
-    <%= form.label :weight_lbs %>
-    <%= form.text_field :weight_lbs, class: "form-control" %>
+    <%= form.label :weight %>
+    <%= form.text_field :weight, class: "form-control" %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :weight_type %>
+    <%= form.collection_select :weight_type, Weightunit.all, :unit, :unit, :prompt => 'Select' %>
   </div>
 
   <div class="form-group">

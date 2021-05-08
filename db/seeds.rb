@@ -5,3 +5,13 @@
 #
 # Uncomment the following to create an Admin user for Production in Jumpstart Pro
 # User.create name: "name", email: "email", password: "password", password_confirmation: "password", admin: true, terms_of_service: true
+
+Weightunit.create ([
+                    { unit: "gram" },
+                    { unit: "ounce" },
+                    { unit: "pound" },
+                    { unit: "milligram" },
+                    { unit: "kilogram" },
+                    { unit: "unit" },
+                    { unit: "fluid_ounce" },
+                  ])

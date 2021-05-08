@@ -32,6 +32,10 @@
 #  fk_rails_...  (item_id => items.id)
 #
 class Item < ApplicationRecord
+  include Weighable::Model
+
+  weighable :weight
+
   belongs_to :item
   belongs_to :account
   has_many_attached :images
