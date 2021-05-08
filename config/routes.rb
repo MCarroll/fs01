@@ -1,7 +1,7 @@
 # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
-  resources :weightunits
-  resources :items
+  draw :turbo
+
   # Jumpstart views
   if Rails.env.development? || Rails.env.test?
     mount Jumpstart::Engine, at: "/jumpstart"
@@ -38,8 +38,10 @@ Rails.application.routes.draw do
     namespace :v1 do
       resource :auth
       resource :me, controller: :me
+      resource :password
       resources :accounts
       resources :users
+      resources :notification_tokens, only: :create
     end
   end
 
@@ -48,8 +50,12 @@ Rails.application.routes.draw do
     controllers: {
       masquerades: "jumpstart/masquerades",
       omniauth_callbacks: "users/omniauth_callbacks",
-      registrations: "users/registrations"
+      registrations: "users/registrations",
+      sessions: "users/sessions"
     }
+  devise_scope :user do
+    get "session/otp", to: "sessions#otp"
+  end
 
   resources :announcements, only: [:index]
   resources :api_tokens
@@ -71,15 +77,19 @@ Rails.application.routes.draw do
     patch :resume
   end
   resources :charges
+
   namespace :account do
     resource :password
   end
-
   resources :notifications, only: [:index, :show]
   namespace :users do
     resources :mentions, only: [:index]
   end
   namespace :user, module: :users do
+    resource :two_factor, controller: :two_factor do
+      get :backup_codes
+      get :verify
+    end
     resources :connected_accounts
   end
 
@@ -105,6 +115,8 @@ Rails.application.routes.draw do
 
   authenticated :user do
     root to: "dashboard#show", as: :user_root
+    # Alternate route to use if logged in users should still see public root
+    # get "/dashboard", to: "dashboard#show", as: :user_root
   end
 
   # Public marketing homepage

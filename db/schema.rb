@@ -10,7 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 2021_03_31_072935) do
+=======
+ActiveRecord::Schema.define(version: 2021_04_22_222152) do
+>>>>>>> jumpstart/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -134,26 +138,13 @@ ActiveRecord::Schema.define(version: 2021_03_31_072935) do
     t.index ["user_id"], name: "index_api_tokens_on_user_id"
   end
 
-  create_table "items", force: :cascade do |t|
-    t.string "short_name"
-    t.string "name"
-    t.string "sku"
-    t.string "price"
-    t.decimal "weight_value", precision: 30, scale: 15
-    t.integer "weight_unit", limit: 2
-    t.integer "weight_display_unit", limit: 2
-    t.string "weight_type"
-    t.string "width"
-    t.string "height"
-    t.string "bulk"
-    t.string "bulk_description"
-    t.string "bulk_qty"
-    t.bigint "item_id", null: false
-    t.bigint "account_id", null: false
+  create_table "notification_tokens", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "token", null: false
+    t.string "platform", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["account_id"], name: "index_items_on_account_id"
-    t.index ["item_id"], name: "index_items_on_item_id"
+    t.index ["user_id"], name: "index_notification_tokens_on_user_id"
   end
 
   create_table "notifications", force: :cascade do |t|
@@ -211,6 +202,7 @@ ActiveRecord::Schema.define(version: 2021_03_31_072935) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "trial_period_days", default: 0
+    t.boolean "hidden"
   end
 
   create_table "user_connected_accounts", force: :cascade do |t|
@@ -259,6 +251,10 @@ ActiveRecord::Schema.define(version: 2021_03_31_072935) do
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
     t.string "preferred_language"
+    t.boolean "otp_required_for_login"
+    t.string "otp_secret"
+    t.integer "last_otp_timestep"
+    t.text "otp_backup_codes"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_users_on_invitations_count"

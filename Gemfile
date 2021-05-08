@@ -52,11 +52,10 @@ group :test do
   gem "webdrivers"
 end
 
-# Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem "tzinfo-data", platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem "tzinfo-data"
 
 # Jumpstart dependencies
-gem "jumpstart", path: "lib/jumpstart"
+gem "jumpstart", path: "lib/jumpstart", group: :omit
 
 gem "acts_as_tenant"
 gem "administrate", github: "excid3/administrate", branch: "jumpstart" # '~> 0.10.0'
@@ -76,7 +75,10 @@ gem "oj", "~> 3.8", ">= 3.8.1"
 gem "pagy", "~> 4.1"
 gem "pay", "~> 2.6.0"
 gem "pg_search", "~> 2.3"
+gem "prefixed_ids", "~> 1.2"
 gem "receipts", "~> 1.0.0"
+gem "rotp", "~> 6.2"
+gem "rqrcode"
 gem "ruby-oembed", "~> 0.14.0", require: "oembed"
 
 # We always want the latest versions of these gems, so no version numbers
